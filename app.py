@@ -1,30 +1,55 @@
-from flask import Flask
-from flask import request
+from flask import Flask , request , render_template , jsonify
 
 app = Flask(__name__)
 
 @app.route("/")
-def hello_world():
-    return "<h1>Hello, World!</h1>"
 
-@app.route("/Hello2")
-def hello_world2():
-    return "<h1>Hello, World2!</h1>"
+def home_page():
+    return render_template("index.html")
 
-@app.route("/hello1")
-def hello_world1():
-    return "<h1>Hello, World1!</h1>"
+@app.route('/math',methods=['POST'])
+def math_ops():
+    if(request.method == 'POST'):
+        ops = request.form['operation']
+        num1 = int(request.form['num1'])
+        num2 = int(request.form['num2'])
+        if ops == 'add':
+            r = num1+num2
+            result = "The sum of " + str(num1) + ' and ' + str(num2) + " is " + str(r)
+        if ops == 'subtract':
+            r = num1-num2
+            result = "The subtract of " + str(num1) + ' and ' + str(num2) + " is " + str(r)
+        if ops == 'multiply':
+            r = num1*num2
+            result = "The multiply of " + str(num1) + ' and ' + str(num2) + " is " + str(r)
+        if ops == 'divide':
+            r = num1/num2
+            result = "The divide of " + str(num1) + ' and ' + str(num2) + " is " + str(r)
+            
+        return render_template('results.html' , result = result)
 
-@app.route("/input_url")
-def request_input():
-    data = request.args.get('x')
-    return "This is my input from url {}".format(data)
 
-
-@app.route("/test")
-def test():
-    a = 5+6
-    return "this is my first function in flask {} ".format(a)
+#API testing using postman
+@app.route('/postman_action',methods=['POST'])
+def math_ops1():
+    if(request.method == 'POST'):
+        ops = request.json['operation']
+        num1 = int(request.json['num1'])
+        num2 = int(request.json['num2'])
+        if ops == 'add':
+            r = num1+num2
+            result = "The sum of " + str(num1) + ' and ' + str(num2) + " is " + str(r)
+        if ops == 'subtract':
+            r = num1-num2
+            result = "The subtract of " + str(num1) + ' and ' + str(num2) + " is " + str(r)
+        if ops == 'multiply':
+            r = num1*num2
+            result = "The multiply of " + str(num1) + ' and ' + str(num2) + " is " + str(r)
+        if ops == 'divide':
+            r = num1/num2
+            result = "The divide of " + str(num1) + ' and ' + str(num2) + " is " + str(r)
+            
+        return jsonify(result)
 
 if __name__=="__main__":
-    app.run(host="0.0.0.0", port=5001)
+    app.run(host="0.0.0.0")
